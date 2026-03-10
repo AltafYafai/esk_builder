@@ -35,7 +35,7 @@ JOBS="${JOBS:-$(nproc --all)}"
 # Source
 ################################################################################
 # Format: <host>:<owner/repo>@<ref>
-KERNEL_REPO="github.com:ESK-Project/android_kernel_xiaomi_mt6895@16"
+KERNEL_REPO="github.com:ESK-Project/android_kernel_xiaomi_mt6895@16.2"
 ANYKERNEL_REPO="github.com:ESK-Project/AnyKernel3@android12-5.10"
 BUILD_TOOLS_REPO="android.googlesource.com:kernel/prebuilts/build-tools@main-kernel-build-2024"
 MKBOOTIMG_REPO="android.googlesource.com:platform/system/tools/mkbootimg@main-kernel-build-2024"
