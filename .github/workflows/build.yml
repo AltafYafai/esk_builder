@@ -18,7 +18,7 @@ on:
       TG_NOTIFY:
         type: boolean
         required: true
-
+      
   workflow_dispatch:
     inputs:
       KSU:
@@ -72,13 +72,14 @@ jobs:
           echo "CCACHE_DIR=$HOME/.ccache" >> "$GITHUB_ENV"
           echo "CCACHE_BASEDIR=$GITHUB_WORKSPACE" >> "$GITHUB_ENV"
           mkdir -p "$HOME/.ccache"
+
           ccache --set-config=compiler_check=content
-          ccache --set-config=hash_dir=false
           ccache --set-config=sloppiness=file_macro,include_file_ctime,include_file_mtime,time_macros
-          ccache --set-config=direct_mode=true
-          ccache --set-config=max_size=7G
+          ccache --set-config=max_size=2G
+          
           ccache --zero-stats
           ccache --show-config
+          
           echo "clang_hash=$(clang --version | sha256sum | cut -c1-10 || echo none)" >> "$GITHUB_ENV"
 
       - name: Restore ccache
