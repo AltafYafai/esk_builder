@@ -30,6 +30,7 @@ jobs:
       KSU: ${{ matrix.variant.KSU }}
       SUSFS: ${{ matrix.variant.SUSFS }}
       LXC: ${{ matrix.variant.LXC }}
+      STOCK_CONFIG: true
       TG_NOTIFY: false
 
   release:

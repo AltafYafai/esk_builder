@@ -15,6 +15,9 @@ on:
       LXC:
         type: boolean
         required: true
+      STOCK_CONFIG:
+        type: boolean
+        required: true
       TG_NOTIFY:
         type: boolean
         required: true
@@ -34,6 +37,11 @@ on:
       LXC:
         description: "Apply LXC patch?"
         default: false
+        type: boolean
+
+      STOCK_CONFIG:
+        description: "Spoof stock config?"
+        default: true
         type: boolean
 
       TG_NOTIFY:
@@ -88,6 +96,7 @@ jobs:
           KSU: ${{ inputs.KSU }}
           SUSFS: ${{ inputs.SUSFS }}
           LXC: ${{ inputs.LXC }}
+          STOCK_CONFIG: ${{ inputs.STOCK_CONFIG }}
           TG_NOTIFY: ${{ inputs.TG_NOTIFY }}
         run: |
           chmod +x build.sh

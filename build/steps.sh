@@ -43,6 +43,7 @@ init_build() {
     KSU="$(norm_bool "${KSU:-false}")"
     SUSFS="$(norm_bool "${SUSFS:-false}")"
     LXC="$(norm_bool "${LXC:-false}")"
+    STOCK_CONFIG="$(norm_default "${STOCK_CONFIG-}" "true")"
 
     # ccache setup
     setup_ccache
@@ -119,7 +120,7 @@ send_start_msg() {
 🏷️ \#$(escape_md_v2 "$BUILD_TAG")
 $(tg_run_line)
 *Defconfig:* $(escape_md_v2 "$KERNEL_DEFCONFIG")
-*Features:* KSU $(parse_bool "$KSU"), SuSFS $(parse_bool "$SUSFS"), LXC $(parse_bool "$LXC")
+*Features:* KSU $(parse_bool "$KSU"), SuSFS $(parse_bool "$SUSFS"), LXC $(parse_bool "$LXC"), Stock config $(parse_bool "$STOCK_CONFIG")
 EOF
     )
     telegram_send_msg "$start_msg"
@@ -267,7 +268,11 @@ prepare_build() {
     if is_true "$LXC"; then
         info "Apply LXC patch"
         patch -s -p1 --fuzz=3 --no-backup-if-mismatch < "$KERNEL_PATCHES/lxc_support.patch"
-        success "LXC patch applied"
+    fi
+
+    if is_true "$STOCK_CONFIG"; then
+        info "Apply stock config patch"
+        patch -s -p1 --fuzz=3 --no-backup-if-mismatch < "$KERNEL_PATCHES/stock_config.patch"
     fi
 
     # Config Clang LTO
@@ -379,7 +384,7 @@ $(tg_run_line)
 *Time:* $(escape_md_v2 "${minutes}m ${seconds}s")
 *Kernel:* $(escape_md_v2 "$KERNEL_VERSION")
 *Compiler:* $(escape_md_v2 "$COMPILER_STRING")
-*Features:* KSU $(parse_bool "$KSU"), SuSFS $(is_true "$SUSFS" && escape_md_v2 "$SUSFS_VERSION" || echo "Disabled"), LXC $(parse_bool "$LXC")
+*Features:* KSU $(parse_bool "$KSU"), SuSFS $(is_true "$SUSFS" && escape_md_v2 "$SUSFS_VERSION" || echo "Disabled"), LXC $(parse_bool "$LXC"), Stock config $(parse_bool "$STOCK_CONFIG")
 EOF
     )
 
