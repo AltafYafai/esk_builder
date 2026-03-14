@@ -9,3 +9,5 @@
 /susfs/
 *.log
 /github.env
+/.ccache/
+/libfakestat/

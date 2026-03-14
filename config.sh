@@ -43,21 +43,29 @@ SUSFS_REPO="gitlab.com:simonpunk/susfs4ksu@gki-android12-5.10"
 
 # Other sources
 GKI_URL="https://dl.google.com/android/gki/gki-certified-boot-android12-5.10-2025-09_r1.zip"
+LIBFAKESTAT_URL="https://github.com/cctv18/libfakestat/releases/download/libfakestat-build-251027213612/libfakestat.tar.gz"
 
 ################################################################################
 # Paths
 ################################################################################
+# Work dirs
 KERNEL="$WORKSPACE/kernel"
 ANYKERNEL="$WORKSPACE/anykernel3"
 BUILD_TOOLS="$WORKSPACE/build-tools"
 MKBOOTIMG="$WORKSPACE/mkbootimg"
 CLANG="$WORKSPACE/clang"
-CLANG_BIN="$CLANG/bin"
+KERNEL_PATCHES="$WORKSPACE/kernel_patches"
+SUSFS_DIR="$WORKSPACE/susfs"
+LIBFAKESTAT_DIR="$WORKSPACE/libfakestat"
+
+# Output stuff
 OUT_DIR="$WORKSPACE/out"
 BOOT_IMAGE="$WORKSPACE/boot_image"
-SIGN_KEY="$WORKSPACE/key"
-BOOT_SIGN_KEY="$SIGN_KEY/boot_sign_key.pem"
-KERNEL_PATCHES="$WORKSPACE/kernel_patches"
-KERNEL_OUT="$KERNEL/out"
-SUSFS_DIR="$WORKSPACE/susfs"
 LOGFILE="$WORKSPACE/build.log"
+SIGN_KEY="$WORKSPACE/key"
+
+# Helper paths
+CLANG_BIN="$CLANG/bin"
+BOOT_SIGN_KEY="$SIGN_KEY/boot_sign_key.pem"
+KERNEL_OUT="$KERNEL/out"
+LIBFAKESTAT="$LIBFAKESTAT_DIR/libfakestat.so"

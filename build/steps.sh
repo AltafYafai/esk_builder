@@ -5,6 +5,34 @@
 # Build steps
 ################################################################################
 
+setup_ccache() {
+    export CCACHE_DIR="${CCACHE_DIR:-$WORKSPACE/.ccache}"
+    export CCACHE_BASEDIR="$WORKSPACE"
+    export CCACHE_COMPILERCHECK="content"
+    export CCACHE_NOHASHDIR=true
+    export CCACHE_SLOPPINESS="file_stat_matches,include_file_ctime,include_file_mtime,pch_defines,file_macro,time_macro"
+
+    mkdir -p "$CCACHE_DIR"
+    ccache --max-size "2G"
+
+    ccache --zero-stats
+    ccache --show-config
+}
+
+setup_ld_preload() {
+    export LIBFAKETIME=$(find /usr/lib* /lib* -name libfaketimeMT.so.1 -print -quit 2>/dev/null || true)
+    export LIBFAKESTAT
+
+    [[ -f "$LIBFAKESTAT" ]] && return 0
+
+    local archive="$WORKSPACE/libfakestat.tar.gz"
+    mkdir -p "$LIBFAKESTAT_DIR"
+
+    curl -fsSLo "$archive" "$LIBFAKESTAT_URL"
+    tar -xzf "$archive" -C "$LIBFAKESTAT_DIR"
+    rm -f "$archive"
+}
+
 init_build() {
     step 1 "Init build"
 
@@ -16,11 +44,15 @@ init_build() {
     SUSFS="$(norm_bool "${SUSFS:-false}")"
     LXC="$(norm_bool "${LXC:-false}")"
 
+    # ccache setup
+    setup_ccache
+    setup_ld_preload
+
     # Make arguments
     MAKE_ARGS=(
         -j"$JOBS" O="$KERNEL_OUT" ARCH="arm64"
         CC="ccache clang" CROSS_COMPILE="aarch64-linux-gnu-"
-        LLVM="1" LD="$CLANG_BIN/ld.lld"
+        LLVM="1" LD="ld.lld"
     )
 
     # Environment default setting
@@ -143,7 +175,7 @@ setup_toolchain() {
     step 7 "Setup toolchain"
 
     _use_toolchain() {
-        export PATH="$CLANG_BIN:$PATH"
+        export PATH="$WORKSPACE/build:$CLANG_BIN:$PATH"
         COMPILER_STRING="$("$CLANG_BIN/clang" --version | head -n 1 | sed 's/(https..*//')"
         export KBUILD_BUILD_USER KBUILD_BUILD_HOST
     }
@@ -256,11 +288,12 @@ build_kernel() {
     cd "$KERNEL"
 
     info "Generate defconfig: $KERNEL_DEFCONFIG"
-    make "${MAKE_ARGS[@]}" "$KERNEL_DEFCONFIG" > /dev/null 2>&1
+    make "${MAKE_ARGS[@]}" "$KERNEL_DEFCONFIG"
 
     info "Building Image..."
     make "${MAKE_ARGS[@]}" Image
     success "Kernel built successfully"
+    ccache --show-stats
 
     KERNEL_VERSION=$(make -s kernelversion | cut -d- -f1)
 }
