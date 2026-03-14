@@ -15,12 +15,12 @@ tg_run_line() {
 }
 
 telegram_send_msg() {
-    is_true "$TG_NOTIFY" || return 0
+    is_true "${TG_NOTIFY:-false}" || return 0
     printf '%s' "$*" | python3 "$TG_PY" msg
 }
 
 telegram_upload_file() {
-    is_true "$TG_NOTIFY" || return 0
+    is_true "${TG_NOTIFY:-false}" || return 0
 
     local file="$1"
     shift # For the caption

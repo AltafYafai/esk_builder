@@ -78,11 +78,19 @@ reset_dir() {
 git_clone() {
     local source="$1"
     local dest="$2"
-    local host repo branch
-    [[ -d "$dest/.git" ]] && return 0
+    local host repo branch url
     IFS=':@' read -r host repo branch <<< "$source"
+    url="https://${host}/${repo}"
+
+    if [[ -d "$dest/.git" ]]; then
+        git -C "$dest" clean -fdx -q
+        git -C "$dest" fetch -q --depth=1 --no-tags origin "$branch"
+        git -C "$dest" reset -q --hard FETCH_HEAD
+        return 0
+    fi
+
     git clone -q --depth=1 --single-branch --no-tags \
-        "https://${host}/${repo}" -b "${branch}" "${dest}"
+        "$url" -b "${branch}" "${dest}"
 }
 
 # Setup KernelSU
@@ -124,6 +132,8 @@ clang_lto() {
 error() {
     trap - ERR
     printf '%b\n' "${RED}[$(date '+%F %T')] [ERROR]${NC} $*" >&2
+
+    is_true "${TG_NOTIFY:-false}" || exit 1
 
     local msg
     msg=$(
