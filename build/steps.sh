@@ -282,6 +282,11 @@ build_kernel() {
     info "Generate defconfig: $KERNEL_DEFCONFIG"
     make "${MAKE_ARGS[@]}" "$KERNEL_DEFCONFIG"
 
+    cfi="$(scripts/config --file out/.config -s CFI_FORCE_SKIP_CHECK)"
+    if [[ "$cfi" == "y" ]]; then
+        warn "CFI checks is disabled!"
+    fi
+
     info "Building Image..."
     make "${MAKE_ARGS[@]}" Image
     success "Kernel built successfully"
