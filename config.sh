@@ -55,9 +55,12 @@ case "$BUILD_TARGET" in
         BOOT_MODE="single"
         ;;
     generic)
-        KERNEL_REPO="github.com:ESK-Project/android12-5.10-gki@main"
+        KERNEL_REPO="https://github.com/AltafYafai/kernel_xiaomi_sky.git"
+        ANYKERNEL_BRANCH="master"
+        KERNEL_BRANCH="lineage-23.1"
         RELEASE_REPO="ESK-Project/gki-releases"
         BOOT_MODE="multi"
+        DEFCONFIG_TO_MERGE="vendor/sky_GKI.config"
         ;;
     *)
         echo "Unknown build target: $BUILD_TARGET" >&2
