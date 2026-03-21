@@ -57,10 +57,9 @@ case "$BUILD_TARGET" in
     generic)
         KERNEL_REPO="github.com:AltafYafai/kernel_xiaomi_sky.git@lineage-23.1"
         ANYKERNEL_BRANCH="master"
-        #KERNEL_BRANCH="lineage-23.1"
+        DEFCONFIG_TO_MERGE="vendor/sky_GKI.config"
         RELEASE_REPO="ESK-Project/gki-releases"
         BOOT_MODE="multi"
-        DEFCONFIG_TO_MERGE="vendor/sky_GKI.config"
         ;;
     *)
         echo "Unknown build target: $BUILD_TARGET" >&2
